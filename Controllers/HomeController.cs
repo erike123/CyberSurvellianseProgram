@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Diagnostics;
 using Web3Auditor.Models;
@@ -22,15 +23,8 @@ namespace Web3Auditor.Controllers
 
         public IActionResult Index()
         {
-            // Insert some test data into the collection for demonstration
-            var testVulnerability1 = new Vulnerability
-            {
-                Content = "Sample vulnerability content #1"
-            };
-
-            _vulnerabilityCollection.InsertOne(testVulnerability1);
-
-            return View();
+            List<Vulnerability> model = _vulnerabilityCollection.Find(new BsonDocument()).ToList();
+            return View(model);
         }
 
         public IActionResult Privacy()
