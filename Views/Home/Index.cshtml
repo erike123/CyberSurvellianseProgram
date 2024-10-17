@@ -1,0 +1,64 @@
+﻿@model List<Web3Auditor.Models.Vulnerability>
+@{
+    ViewData["Title"] = "Index";
+}
+
+@{
+    for (int i = 0; i < Model.Count; i++)
+    {
+        @Html.Raw(Model[i].Content.Replace("\n","<br>"))
+        <input type="checkbox" class="delete-checkbox" name="vulnerability" value="@Model[i].Id" />
+        <br>
+        <br>
+        @Html.Raw("------------------------------------------------------");
+        
+    }
+}
+
+<script>
+    // Add event listener for the Delete key press
+    document.addEventListener('keydown', function(event) {
+        // Check if the pressed key is 'Delete'
+        if (event.key === 'Delete') {
+            deleteSelected(); // Call the deleteSelected function
+        }
+    });
+
+    function deleteSelected() {
+        // Gather all checked checkboxes
+        var selectedIds = [];
+        var checkboxes = document.querySelectorAll('.delete-checkbox:checked');
+
+        // If no checkboxes are selected, exit the function
+        if (checkboxes.length === 0) {
+            alert("Please select at least one vulnerability to delete.");
+            return;
+        }
+
+        // Loop through the checkboxes and collect the values (which are IDs)
+        checkboxes.forEach(function(checkbox) {
+            selectedIds.push(checkbox.value);
+        });
+
+        // Make an AJAX POST request to the DeleteMany action in the controller
+        fetch('@Url.Action("DeleteMany", "Home")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(selectedIds)
+        })
+        .then(response => {
+            if (response.ok) {
+                // If the request was successful, reload the page to update the list
+                window.location.reload();
+            } else {
+                alert("Error deleting vulnerabilities.");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred while deleting vulnerabilities.");
+        });
+    }
+</script>

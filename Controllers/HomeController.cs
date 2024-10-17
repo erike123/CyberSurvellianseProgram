@@ -3,6 +3,8 @@ using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Driver;
 using System.Diagnostics;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 using System.Xml;
 using Web3Auditor.Models;
@@ -12,6 +14,8 @@ namespace Web3Auditor.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+
+        private static readonly HttpClient _httpClient = new HttpClient();
 
         private readonly IMongoCollection<Vulnerability> _vulnerabilityCollection;
 
@@ -24,22 +28,100 @@ namespace Web3Auditor.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> TestApi(string? prompt)
         {
-            // Use projection to only include the 'Content' field in the results, exclude 'Id'
-            var projection = Builders<Vulnerability>.Projection
-                .Include(v => v.Content)
-                .Exclude(v => v.Id);  // Explicitly exclude 'Id'
+            // Replace with your OpenAI API key
+            string apiKey = Environment.GetEnvironmentVariable("API");
 
-            var contentOnly = _vulnerabilityCollection.Find(new BsonDocument())
-                .Project(projection)
-                .ToList();
+            // Set up the HTTP client
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            // Convert the projection result (BsonDocument) into JSON
-            var json = contentOnly.ToJson(new JsonWriterSettings { Indent = true });
+            // Create the request body
+            var requestBody = new
+            {
+                model = "gpt-3.5-turbo", // or "gpt-4" if you have access
+                messages = new[]
+                {
+                    new { role = "user", content = prompt }
+                },
+                max_tokens=4096
+            };
 
-            // Return the prettified JSON as the response
-            return Content(json, "application/json");
+            // Serialize the request body to JSON
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(requestBody);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            // Send the request
+            var response = await _httpClient.PostAsync("https://api.openai.com/v1/chat/completions", content);
+
+            // Check if the response was successful
+            if (response.IsSuccessStatusCode)
+            {
+                // Read the response content
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResponse);
+                var responseText = result.choices[0].message.content;
+
+                _vulnerabilityCollection.InsertOne(
+                    new Vulnerability()
+                    {
+                        Content = $"Prompt = {prompt}\n\n Response = {responseText}"
+                    }
+                    );
+
+                return new ContentResult
+                {
+                    Content = "Response: " + responseText,
+                    ContentType = "text/html", // You can change this to "application/json" if returning JSON
+                    StatusCode = 200
+                };
+            }
+            else
+            {
+                dynamic result = ($"Error: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
+                return new ContentResult
+                {
+                    Content = result,
+                    ContentType = "text/html", // You can change this to "application/json" if returning JSON
+                    StatusCode = 200
+                };
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteMany([FromBody] List<string> ids)
+        {
+            if (ids == null || ids.Count == 0)
+            {
+                return BadRequest("No vulnerabilities selected for deletion.");
+            }
+
+            try
+            {
+
+                var objectIds = ids.Select(id => new ObjectId(id)).ToList();
+                // Build a filter to find documents with the specified ids
+                var filter = Builders<Vulnerability>.Filter.In(v => v.Id, objectIds);
+
+                // Perform the deletion operation
+                var result = await _vulnerabilityCollection.DeleteManyAsync(filter);
+              
+                return Ok(); // Success
+                
+            }
+            catch (Exception ex)
+            {
+                // Log the exception and return a server error
+                // Log(ex);
+                return StatusCode(500, "An error occurred while deleting vulnerabilities.");
+            }
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var model = await _vulnerabilityCollection.Find(FilterDefinition<Vulnerability>.Empty).ToListAsync();
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
