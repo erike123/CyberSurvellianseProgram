@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using MongoDB.Driver;
 using System.Diagnostics;
+using System.Text.Json;
+using System.Xml;
 using Web3Auditor.Models;
 
 namespace Web3Auditor.Controllers
@@ -23,13 +26,20 @@ namespace Web3Auditor.Controllers
 
         public IActionResult Index()
         {
-            List<Vulnerability> model = _vulnerabilityCollection.Find(new BsonDocument()).ToList();
-            return View(model);
-        }
+            // Use projection to only include the 'Content' field in the results, exclude 'Id'
+            var projection = Builders<Vulnerability>.Projection
+                .Include(v => v.Content)
+                .Exclude(v => v.Id);  // Explicitly exclude 'Id'
 
-        public IActionResult Privacy()
-        {
-            return View();
+            var contentOnly = _vulnerabilityCollection.Find(new BsonDocument())
+                .Project(projection)
+                .ToList();
+
+            // Convert the projection result (BsonDocument) into JSON
+            var json = contentOnly.ToJson(new JsonWriterSettings { Indent = true });
+
+            // Return the prettified JSON as the response
+            return Content(json, "application/json");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
