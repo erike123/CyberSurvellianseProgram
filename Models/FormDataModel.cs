@@ -19,5 +19,7 @@ namespace Web3Auditor.Models
 		public string desiredFreelancerExperienceLevel { get; set; }
 
 		public string projectDescription { get; set; }
+
+		public string prompt { get; set; }
 	}
 }

@@ -102,14 +102,14 @@ namespace Web3Auditor.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> TestApi([FromBody] PromptClass prompt)
+        public async Task<IActionResult> TestApi([FromBody] FormDataModel model)
         {
-                var responseText = PutPrompt(_vulnerabilityCollection,prompt.Prompt);
+                var responseText = PutPrompt(_vulnerabilityCollection,model.prompt);
                 // Insert the prompt and response into the MongoDB collection
                 _vulnerabilityCollection.InsertOne(
                     new Vulnerability()
                     {
-                        Content = $"Prompt = {prompt.Prompt}\n\n Response = {responseText}"
+                        Content = $"Prompt = {model.prompt}\n\n Response = {responseText}"
                     }
                 );
             return new ContentResult
