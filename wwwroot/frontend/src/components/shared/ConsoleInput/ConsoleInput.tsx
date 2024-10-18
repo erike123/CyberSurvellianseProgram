@@ -5,6 +5,7 @@ import Button from "../Button/Button";
 import { projectTypes, priorityLevel, experienceLevel, technologies } from ".";
 import Dropdown from "../Form/Dropdown";
 import InputField from "../Form/InputField";
+import { testApi } from "../../../services/api";
 
 const initialFormValues = {
   "projectTitle": "",
@@ -21,9 +22,15 @@ const initialFormValues = {
 const ConsoleInput = () => {
 
 
-  const handleFormSubmit = (values: { [key: string]: any }): void => {
+  const handleFormSubmit = async (values: { [key: string]: any }): void => {
       console.log('Form Submitted: ', values);
-      // Handle form data (e.g., send to an API)
+      try {
+        // Call the testApi function and pass the prompt value
+        const apiResponse = await testApi(prompt);
+        console.log(apiResponse)
+      } catch (error) {
+        console.error('Error fetching API response:', error);
+      }
     };
 
   const { values, onChange, onSubmit } = useForm(handleFormSubmit, initialFormValues)
