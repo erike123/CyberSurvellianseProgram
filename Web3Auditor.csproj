@@ -7,6 +7,57 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\frontend\.gitignore" />
+    <None Include="wwwroot\frontend\eslint.config.js" />
+    <None Include="wwwroot\frontend\index.html" />
+    <None Include="wwwroot\frontend\postcss.config.js" />
+    <None Include="wwwroot\frontend\public\vite.svg" />
+    <None Include="wwwroot\frontend\README.md" />
+    <None Include="wwwroot\frontend\src\App.tsx" />
+    <None Include="wwwroot\frontend\src\assets\landing_page.png" />
+    <None Include="wwwroot\frontend\src\assets\Logo.png" />
+    <None Include="wwwroot\frontend\src\assets\profile_images\emil.jpg" />
+    <None Include="wwwroot\frontend\src\assets\profile_images\erik.jpg" />
+    <None Include="wwwroot\frontend\src\assets\profile_images\kristina.jpg" />
+    <None Include="wwwroot\frontend\src\assets\profile_images\luchezar.jpg" />
+    <None Include="wwwroot\frontend\src\assets\profile_images\pizza.jpg" />
+    <None Include="wwwroot\frontend\src\assets\profile_images\vasil.jpg" />
+    <None Include="wwwroot\frontend\src\assets\recomendations.svg" />
+    <None Include="wwwroot\frontend\src\assets\report.svg" />
+    <None Include="wwwroot\frontend\src\assets\security.svg" />
+    <None Include="wwwroot\frontend\src\assets\upload.svg" />
+    <None Include="wwwroot\frontend\src\components\common\About\Aboutus.tsx" />
+    <None Include="wwwroot\frontend\src\components\common\About\index.ts" />
+    <None Include="wwwroot\frontend\src\components\common\About\ProfileItem.tsx" />
+    <None Include="wwwroot\frontend\src\components\common\Home\Home.tsx" />
+    <None Include="wwwroot\frontend\src\components\common\Steps\Steps.tsx" />
+    <None Include="wwwroot\frontend\src\components\common\Steps\StepsItem.tsx" />
+    <None Include="wwwroot\frontend\src\components\shared\Button\Button.tsx" />
+    <None Include="wwwroot\frontend\src\components\shared\ConsoleInput\ConsoleInput.tsx" />
+    <None Include="wwwroot\frontend\src\components\shared\ConsoleInput\index.ts" />
+    <None Include="wwwroot\frontend\src\components\shared\Form\Dropdown.tsx" />
+    <None Include="wwwroot\frontend\src\components\shared\Form\InputField.tsx" />
+    <None Include="wwwroot\frontend\src\components\shared\Header\Header.tsx" />
+    <None Include="wwwroot\frontend\src\components\shared\Logo\Logo.tsx" />
+    <None Include="wwwroot\frontend\src\hooks\useForm.tsx" />
+    <None Include="wwwroot\frontend\src\index.css" />
+    <None Include="wwwroot\frontend\src\main.tsx" />
+    <None Include="wwwroot\frontend\src\Paths.tsx" />
+    <None Include="wwwroot\frontend\src\sections\AudiPage\AnalysisComponent.tsx" />
+    <None Include="wwwroot\frontend\src\sections\AudiPage\AuditComponent.tsx" />
+    <None Include="wwwroot\frontend\src\sections\AudiPage\index.ts" />
+    <None Include="wwwroot\frontend\src\sections\Footer\Footer.tsx" />
+    <None Include="wwwroot\frontend\src\sections\Hero\Hero.tsx" />
+    <None Include="wwwroot\frontend\src\sections\Navigation\Menu.tsx" />
+    <None Include="wwwroot\frontend\src\sections\Navigation\Navigation.tsx" />
+    <None Include="wwwroot\frontend\src\services\api.ts" />
+    <None Include="wwwroot\frontend\src\types\UserData.ts" />
+    <None Include="wwwroot\frontend\src\vite-env.d.ts" />
+    <None Include="wwwroot\frontend\tailwind.config.js" />
+    <None Include="wwwroot\frontend\vite.config.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.18" />
     <PackageReference Include="MongoDB.Driver" Version="3.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
