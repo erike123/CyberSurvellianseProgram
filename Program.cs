@@ -2,13 +2,23 @@ namespace Web3Auditor
 {
     public class Program
     {
-
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            // Add CORS services
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowReactApp", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173") // Replace with your React app URL
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
 
             var app = builder.Build();
 
@@ -25,13 +35,16 @@ namespace Web3Auditor
 
             app.UseRouting();
 
+            // Use CORS with the specified policy
+            app.UseCors("AllowReactApp");
+
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{action=Index}/{id?}", // Default to "Index" action if none provided
                 defaults: new { controller = "Home" }
-            );// Set default controller to "Home"
+            ); // Set default controller to "Home"
 
             app.Run();
         }

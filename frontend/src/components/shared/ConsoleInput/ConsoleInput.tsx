@@ -26,7 +26,7 @@ const ConsoleInput = () => {
       console.log('Form Submitted: ', values);
       try {
         // Call the testApi function and pass the prompt value
-        const apiResponse = await testApi(prompt);
+        const apiResponse = await testApi(values);
         console.log(apiResponse)
       } catch (error) {
         console.error('Error fetching API response:', error);
