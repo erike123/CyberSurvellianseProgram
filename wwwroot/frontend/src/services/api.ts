@@ -4,7 +4,11 @@ import baseUrl from './baseUrl';
 
 export const testApi = async (values) => {
     try {
-        const res = await axios.post(`${baseUrl}/testapi`, { prompt })
+        const res = await axios.post(`${baseUrl}/testapi`, values, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
         const data = res.data;
         console.log('DATA LOG FROM API.ts', data);
         return data;
