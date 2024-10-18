@@ -18,7 +18,7 @@ namespace Web3Auditor.Controllers
         private static readonly HttpClient _httpClient = new HttpClient();
 
         private readonly IMongoCollection<Vulnerability> _vulnerabilityCollection;
-
+           
         public async Task<string> PutPrompt(IMongoCollection<Vulnerability> _vulnerabilityCollection, string prompt)
         {
             // Replace with your OpenAI API key
@@ -102,24 +102,37 @@ namespace Web3Auditor.Controllers
         }
 
         [HttpPost]
+        [Route("testApi")] // Define the path for the POST request
         public async Task<IActionResult> TestApi([FromBody] FormDataModel model)
         {
-                var responseText = PutPrompt(_vulnerabilityCollection,model.prompt);
+            // Check if the model is valid
+            if (model == null || string.IsNullOrEmpty(model.Prompt))
+            {
+                return BadRequest("Invalid input. The prompt is required.");
+            }
+
+            try
+            {
+                // Await the response from PutPrompt (which calls OpenAI API)
+                var responseText = await PutPrompt(_vulnerabilityCollection, model.Prompt);
+
                 // Insert the prompt and response into the MongoDB collection
-                _vulnerabilityCollection.InsertOne(
-                    new Vulnerability()
-                    {
-                        Content = $"Prompt = {model.prompt}\n\n Response = {responseText}"
-                    }
-                );
-            return new ContentResult
+                var vulnerability = new Vulnerability
                 {
-                    Content = "Response: " + responseText,
-                    ContentType = "text/html", // You can change this to "application/json" if returning JSON
-                    StatusCode = 200
+                    Content = $"Prompt = {model.Prompt}\n\n Response = {responseText}"
                 };
-            
+                await _vulnerabilityCollection.InsertOneAsync(vulnerability); // Use async MongoDB method
+
+                // Return the response as JSON 
+                return Ok(new { response = responseText });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if necessary and return a 500 status code
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+
         [HttpPost]
         public async Task<IActionResult> DeleteMany([FromBody] List<string> ids)
         {

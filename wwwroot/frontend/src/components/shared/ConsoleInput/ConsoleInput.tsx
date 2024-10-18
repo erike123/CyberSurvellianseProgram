@@ -6,6 +6,7 @@ import { projectTypes, priorityLevel, experienceLevel, technologies } from ".";
 import Dropdown from "../Form/Dropdown";
 import InputField from "../Form/InputField";
 import { testApi } from "../../../services/api";
+import baseUrl from "../../../services/baseUrl";
 
 const initialFormValues = {
   "projectTitle": "",
@@ -17,21 +18,37 @@ const initialFormValues = {
   "priorityLevel": "",
   "desiredFreelancerExperienceLevel": "",
   "projectDescription": "",
+  "prompt": "This works",
 }
 
 const ConsoleInput = () => {
 
+  const handleFormSubmit = async () => {
+    const data = {...values}
+    try {
+      const response = await fetch(`${baseUrl}/testApi`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
 
-  const handleFormSubmit = async (values: { [key: string]: any }): void => {
-      console.log('Form Submitted: ', values);
-      try {
-        // Call the testApi function and pass the prompt value
-        const apiResponse = await testApi(values);
-        console.log(apiResponse)
-      } catch (error) {
-        console.error('Error fetching API response:', error);
+      console.log('DEBUG', response)
+  
+      if (!response.ok) {
+        // Check for network or server errors
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    };
+      
+  
+      const result = await response.json();
+      console.log('Form submitted successfully:', result);
+    } catch (error) {
+      console.error('Error during form submission:', error);
+    }
+  };
+  
 
   const { values, onChange, onSubmit } = useForm(handleFormSubmit, initialFormValues)
 

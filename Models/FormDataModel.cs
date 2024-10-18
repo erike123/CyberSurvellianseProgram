@@ -2,15 +2,15 @@ namespace Web3Auditor.Models
 {
 	public class FormDataModel
 	{
-        public string projectTitle { get; set; }
-        public string projectType { get; set; }
-        public string repositoryLink { get; set; }
-        public string technologies { get; set; }
-        public decimal budget { get; set; }  // Use decimal for monetary values
-        public string deadline { get; set; } // You might want to use DateTime
-        public string priorityLevel { get; set; }
-        public string desiredFreelancerExperienceLevel { get; set; }
-        public string projectDescription { get; set; }
-        public string prompt { get; set; }
+        public string? ProjectTitle { get; set; }
+        public string? ProjectType { get; set; }
+        public string? RepositoryLink { get; set; }
+        public string? Technologies { get; set; }
+        public string? Budget { get; set; }  // Use decimal for monetary values
+        public string? Deadline { get; set; } // You might want to use DateTime
+        public string? PriorityLevel { get; set; }
+        public string? DesiredFreelancerExperienceLevel { get; set; }
+        public string? ProjectDescription { get; set; }
+        public string? Prompt { get; set; }
     }
 }

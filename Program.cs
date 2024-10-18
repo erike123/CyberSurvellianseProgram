@@ -12,12 +12,13 @@ namespace Web3Auditor
             // Add CORS services
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowReactApp", policy =>
-                {
-                    policy.WithOrigins("http://localhost:5173") // Replace with your React app URL
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
-                });
+                    options.AddPolicy("AllowAll",
+                        builder =>
+                        {
+                            builder.AllowAnyOrigin()
+                                .AllowAnyMethod()
+                                .AllowAnyHeader();
+                        });
             });
 
             var app = builder.Build();
@@ -36,7 +37,7 @@ namespace Web3Auditor
             app.UseRouting();
 
             // Use CORS with the specified policy
-            app.UseCors("AllowReactApp");
+            app.UseCors("AllowAll");
 
             app.UseAuthorization();
 
