@@ -3,6 +3,7 @@ import useForm from "../../hooks/useForm";
 import ConsoleInput from "../../components/shared/ConsoleInput/ConsoleInput";
 import Header from "../../components/shared/Header/Header";
 import AnalysisComponent from "./AnalysisComponent";
+import userData from "../../types/UserData";
 
 
 export default function AuditComponent() {
@@ -26,7 +27,7 @@ export default function AuditComponent() {
 
                 <ConsoleInput />
             </div>
-            <AnalysisComponent />
+            {/* <AnalysisComponent /> */}
 
         </div>
 

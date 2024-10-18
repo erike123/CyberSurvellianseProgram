@@ -68,6 +68,10 @@ html {
     @apply font-montserrat text-gray-500 font-medium lg:text-[0.8rem] xl:text-[1rem] text-[0.7rem];
   }
 
+  .formInput {
+    @apply bg-gray-800 text-green-500 font-mono p-4 rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500;
+  }
+
   .window {
     @apply bg-slate-400/[.03] border border-slate-500/[.30] rounded-3xl;
   }

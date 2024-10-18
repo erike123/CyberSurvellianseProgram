@@ -18,7 +18,7 @@ const Header: React.FC<HeaderProps> = ({ title, coloredText, coloredClass, size,
     } 
 
     return(
-        <div data-testid="message-container" className='mb-12 text-center flex flex-col gap-4'>
+        <div data-testid="message-container" className='mb-6 text-center flex flex-col gap-4'>
             
             <h1 className={`xl:${size} ${classNames} text-white-clr text-3xl`}>
                 {title}
