@@ -9,6 +9,9 @@ import { testApi } from "../../../services/api";
 import baseUrl from "../../../services/baseUrl";
 import Cards from "../Cards/Cards";
 import { Card } from "@mui/material";
+import MyContractComponent from "../MyContractComponent/MyContractComponent";
+
+
 
 const initialFormValues = {
   "projectTitle": "",
@@ -58,8 +61,10 @@ const ConsoleInput = () => {
   const [ companies, setCompanies ] = useState([]);
 
 
+
   return (
     <div className="rounded-md max-w-full mt-14">
+      <MyContractComponent />
 
       {companies.length > 0 ? (<Cards companies={companies} />) :
       (
