@@ -8,6 +8,8 @@ using System.Text;
 using System.Text.Json;
 using System.Xml;
 using Web3Auditor.Models;
+using Nethereum.Web3;
+using Nethereum.Web3.Accounts;
 
 namespace Web3Auditor.Controllers
 {
