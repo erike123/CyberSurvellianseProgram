@@ -8,6 +8,8 @@ using System.Text;
 using System.Text.Json;
 using System.Xml;
 using Web3Auditor.Models;
+using Nethereum.Web3;
+using Nethereum.Web3.Accounts;
 
 namespace Web3Auditor.Controllers
 {
@@ -18,7 +20,31 @@ namespace Web3Auditor.Controllers
         private static readonly HttpClient _httpClient = new HttpClient();
 
         private readonly IMongoCollection<Vulnerability> _vulnerabilityCollection;
-           
+
+        public async Task Main(string[] args)
+        {
+            // Your wallet private key (keep this safe!)
+            string privateKey = "YOUR_PRIVATE_KEY";
+            var account = new Account(privateKey);
+
+            // Connect to the Sepolia network
+            var web3 = new Web3(account, "https://sepolia.infura.io/v3/YOUR_INFURA_PROJECT_ID");
+
+            // Replace with your contract address and ABI
+            string contractAddress = "0xasdnsdferguierfwe23ee3";
+            string contractAbi = "[ABI_JSON]"; // Replace with the actual ABI
+
+            var contract = web3.Eth.GetContract(contractAbi, contractAddress);
+
+            // Assuming the function to send data is called "storeData" and takes a string
+            var storeDataFunction = contract.GetFunction("storeData");
+
+            // Send the data
+            var transactionHash = await storeDataFunction.SendTransactionAsync(account.Address, "asdasdas");
+
+            Console.WriteLine($"Transaction sent! Hash: {transactionHash}");
+        }
+
         public async Task<string> PutPrompt(IMongoCollection<Vulnerability> _vulnerabilityCollection, string prompt)
         {
             // Replace with your OpenAI API key
