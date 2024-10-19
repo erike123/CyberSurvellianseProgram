@@ -19,7 +19,7 @@ namespace Web3Auditor.Controllers
 
         private readonly IMongoCollection<Vulnerability> _vulnerabilityCollection;
            
-        public async Task<string> PutPrompt(IMongoCollection<Vulnerability> _vulnerabilityCollection, string prompt)
+        public async Task<List<Company>> PutPrompt(IMongoCollection<Vulnerability> _vulnerabilityCollection, string prompt)
         {
             // Replace with your OpenAI API key
             string apiKey = Environment.GetEnvironmentVariable("API");
@@ -46,22 +46,36 @@ namespace Web3Auditor.Controllers
             // Send the request
             var response = await _httpClient.PostAsync("https://api.openai.com/v1/chat/completions", content);
 
-            // Check if the response was successful
-            if (response.IsSuccessStatusCode)
-            {
-                // Read the response content
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResponse);
-                var responseText = result.choices[0].message.content;
 
-                // Return the responseText
-                return responseText;
-            }
-            else
+            // Check if the response was successful
+           
+            // Read the response content
+            // Read the raw JSON response
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+
+            // Deserialize the response into a dynamic object
+            dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResponse);
+
+            // Get the string that looks like "{google, microsoft}"
+            var responseText = result.choices[0].message.content.ToString();
+
+            // Remove the curly braces and split the string into an array
+            var companiesArray = responseText.Trim('{', '}').Split(',');
+
+            // Create a list to hold the company objects
+            List<Company> companyList = new List<Company>();
+
+            // Iterate through the company names and add them as objects to the list
+            foreach (var company in companiesArray)
             {
-                // Handle the error case, maybe throw an exception or return an error message
-                return "Error: Failed to get a response from OpenAI.";
+                // Trim to remove any extra spaces and create a new Company object
+                companyList.Add(new Company { CompanyName = company.Trim() });
             }
+            // Return the responseText
+            // Check if companies are null and initialize if necessary
+            return companyList;
+         
+  
         }
 
         public HomeController(ILogger<HomeController> logger)
@@ -73,33 +87,34 @@ namespace Web3Auditor.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> GetJsonData()
-        {
-            StringBuilder sb = new StringBuilder();
-            string companiesPrompt = $"Give me top 20 companies that made reports for smart contracts last months and can u give me exactly the names and only names of companies -> i want only the names (no other words or characters) - comma separated without space";
-            string companiesResponse = await PutPrompt(_vulnerabilityCollection, companiesPrompt);
-            List<string> compainies = companiesResponse.Split(",").ToList();
+        // ITS NOT WORKING FOR ME I USE THE _PUTPROMPT DIRECTLY IN TESTAPI
+        //public async Task<IActionResult> GetJsonData()
+        //{
+        //    StringBuilder sb = new StringBuilder();
+        //    string companiesPrompt = $"Give me top 20 companies that made reports for smart contracts last months and can u give me exactly the names and only names of companies -> i want only the names (no other words or characters) - comma separated without space";
+        //    string companiesResponse = await PutPrompt(_vulnerabilityCollection, companiesPrompt);
+        //    List<string> compainies = companiesResponse.Split(",").ToList();
 
-            string responseText = String.Empty;
+        //    string responseText = String.Empty;
 
-            foreach (var company in compainies)
-            {
-                string mainPrompt =
-                    $"Pashov audited\r\n\r\nAzuro (4 audits):\r\n\r\n    Access Control Vulnerabilities: Found 3 times across different Azuro audits.\r\n    Gas Optimization Issues: Identified in 2 reports.\r\n    Logic Errors: Discovered in 2 reports.\r\n\r\nMetalabel (2 audits):\r\n\r\n    Access Control Vulnerabilities: Reported in 1 audit.\r\n    Gas Optimization Issues: Found in 1 report.\r\n\r\nVarious others (1 audit each for Punk Bid, GMD, Florence Finance, etc.):\r\n\r\n    Reentrancy Bugs: Detected in 1 audit (GMD).\r\n    Integer Overflow/Underflow: Found in 1 audit (Punk Bid).\r\n    Logic Errors: Reported once (Florence Finance).\r\n\"\r\n\r\nCan u represent the findings in case of the above format for each comapny in case of {company} for the latest Q -> i want only json for output and nothing else";
-                responseText = await PutPrompt(_vulnerabilityCollection, mainPrompt);
-                sb.AppendLine(responseText);
+        //    foreach (var company in compainies)
+        //    {
+        //        string mainPrompt =
+        //            $"Pashov audited\r\n\r\nAzuro (4 audits):\r\n\r\n    Access Control Vulnerabilities: Found 3 times across different Azuro audits.\r\n    Gas Optimization Issues: Identified in 2 reports.\r\n    Logic Errors: Discovered in 2 reports.\r\n\r\nMetalabel (2 audits):\r\n\r\n    Access Control Vulnerabilities: Reported in 1 audit.\r\n    Gas Optimization Issues: Found in 1 report.\r\n\r\nVarious others (1 audit each for Punk Bid, GMD, Florence Finance, etc.):\r\n\r\n    Reentrancy Bugs: Detected in 1 audit (GMD).\r\n    Integer Overflow/Underflow: Found in 1 audit (Punk Bid).\r\n    Logic Errors: Reported once (Florence Finance).\r\n\"\r\n\r\nCan u represent the findings in case of the above format for each comapny in case of {company} for the latest Q -> i want only json for output and nothing else";
+        //        responseText = await PutPrompt(_vulnerabilityCollection, mainPrompt);
+        //        sb.AppendLine(responseText);
                 
-                // Insert the prompt and response into the MongoDB collection
-                _vulnerabilityCollection.InsertOne(
-                    new Vulnerability()
-                    {
-                        Content = $"Prompt = {mainPrompt}\n\n Response = {responseText}"
-                    }
-                );
-            }
+        //        // Insert the prompt and response into the MongoDB collection
+        //        _vulnerabilityCollection.InsertOne(
+        //            new Vulnerability()
+        //            {
+        //                Content = $"Prompt = {mainPrompt}\n\n Response = {responseText}"
+        //            }
+        //        );
+        //    }
 
-            return Json(responseText);
-        }
+        //    return Json(responseText);
+        //}
 
         [HttpPost]
         [Route("testApi")] // Define the path for the POST request
@@ -114,14 +129,16 @@ namespace Web3Auditor.Controllers
             try
             {
                 // Await the response from PutPrompt (which calls OpenAI API)
-                var responseText = await PutPrompt(_vulnerabilityCollection, model.Prompt);
+                string companiesPrompt = $"Give me top 6 companies that made reports for {model.ProjectType} working on {model.Technologies} programming language in last months and can u give me exactly the names and only names of companies -> i want only the names (no other words or characters) - comma separated without space";
+                var responseText = await PutPrompt(_vulnerabilityCollection, companiesPrompt);
+                
 
                 // Insert the prompt and response into the MongoDB collection
-                var vulnerability = new Vulnerability
-                {
-                    Content = $"Prompt = {model.Prompt}\n\n Response = {responseText}"
-                };
-                await _vulnerabilityCollection.InsertOneAsync(vulnerability); // Use async MongoDB method
+                //var vulnerability = new Vulnerability
+                //{
+                //    Content = $"Prompt = {model.Prompt}\n\n Response = {responseText}"
+                //};
+                //await _vulnerabilityCollection.InsertOneAsync(vulnerability); // Use async MongoDB method
 
                 // Return the response as JSON 
                 return Ok(new { response = responseText });

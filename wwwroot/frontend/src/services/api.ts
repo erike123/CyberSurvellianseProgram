@@ -14,7 +14,7 @@ export const testApi = async (values) => {
             },
             body: data // Send the string as JSON
         });
-        const result = await res.text();
+        const result = await res.json();
         console.log('DATA LOG FROM API.ts', result);
         return result;
     } catch (error) {

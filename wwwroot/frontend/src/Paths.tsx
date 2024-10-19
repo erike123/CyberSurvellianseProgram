@@ -7,6 +7,7 @@ const Path = {
     Aboutus: '/aboutus',
     Audit: '/audit',
     Analysis: '/analysis',
+    Card: '/cards',
 }
 
 export default Path;

@@ -1,5 +1,6 @@
 import Aboutus from './components/common/About/Aboutus';
 import Home from './components/common/Home/Home';
+import Card from './components/shared/Cards/Cards';
 import './index.css';  
 import Path from './Paths';
 import AnalysisComponent from './sections/AudiPage/AnalysisComponent';
@@ -20,7 +21,6 @@ export default function App() {
           <Route path={Path.Aboutus} element={<Aboutus />} />
           <Route path={Path.Audit} element={<AuditComponent />} />
           <Route path={Path.Analysis} element={<AnalysisComponent />} />
-
         </Routes>
       <Footer />
     </main>

@@ -2,15 +2,17 @@ export default function ProfileItem({
     imageUrl,
     name,
     role,
-    description
+    description,
+    size,
 }:{
     imageUrl: string,
     name: string,
-    role: string,
-    description: string
+    role?: string,
+    description?: string,
+    size?: boolean,
 }) {
     return(
-        <div className="bg-white w-[300px] border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <div className={`bg-white ${size ? 'w-[280px]': 'w-[300px]'} border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700`}>
             <div className="overflow-hidden">
                 <img className="rounded-t-lg" src={imageUrl} alt="" />
             </div>
