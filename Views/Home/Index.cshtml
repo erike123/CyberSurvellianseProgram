@@ -1,0 +1,111 @@
+﻿@model List<Web3Auditor.Models.Vulnerability>
+@{
+    ViewData["Title"] = "Index";
+}
+
+@{
+    <div class="container">
+    <div class="row">
+    <div class="w-100">
+    <textarea id="promptTextarea" class="form-control" rows="10" placeholder="Type your prompt here..."></textarea>
+    </div>
+    </div>
+    </div>
+    for (int i = 0; i < Model.Count; i++)
+    {
+        @Html.Raw(Model[i].Content.Split("Response = ")[1].Replace("```csharp", "<pre><code class='language-csharp'>")
+                      .Replace("```html", "<pre><code class='language-html'>")
+                      .Replace("```", "</code></pre>")
+                      .Replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;")
+                      .Replace("\n", "<br>"))
+        <input type="checkbox" class="delete-checkbox" name="vulnerability" value="@Model[i].Id" />
+        <br>
+        <br>
+        @Html.Raw("------------------------------------------------------");
+        
+    }
+}
+
+<script>
+    // Add event listener for the Delete key press
+    document.addEventListener('keydown', function(event) {
+        // Check if the pressed key is 'Delete'
+        if (event.key === 'Delete') {
+            deleteSelected(); // Call the deleteSelected function
+        }
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevents the default form submission behavior
+            addVulnerability(); // Calls the function to submit the prompt
+            window.location.reload();
+        }
+    });
+    function addVulnerability() {
+        var text = document.querySelector('#promptTextarea').value;
+
+        fetch('@Url.Action("TestApi", "Home")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ Prompt: text })
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert("Vulnerability added: " + data.Content);
+                window.location.reload(); // Optionally reload the page to reflect new data
+            });
+    }
+    function deleteSelected() {
+        // Gather all checked checkboxes
+        var selectedIds = [];
+        var checkboxes = document.querySelectorAll('.delete-checkbox:checked');
+
+        // If no checkboxes are selected, exit the function
+        if (checkboxes.length === 0) {
+            alert("Please select at least one vulnerability to delete.");
+            return;
+        }
+
+        // Loop through the checkboxes and collect the values (which are IDs)
+        checkboxes.forEach(function(checkbox) {
+            selectedIds.push(checkbox.value);
+        });
+
+        // Make an AJAX POST request to the DeleteMany action in the controller
+        fetch('@Url.Action("DeleteMany", "Home")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(selectedIds)
+        })
+        .then(response => {
+            if (response.ok) {
+                // If the request was successful, reload the page to update the list
+                window.location.reload();
+            } else {
+                alert("Error deleting vulnerabilities.");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred while deleting vulnerabilities.");
+        });
+    }
+</script>
+
+<!-- Bootstrap CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS (optional, for components) -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<!-- Prettier for formatting code -->
+<script src="https://unpkg.com/prettier@2.8.0/standalone.js"></script>
+<script src="https://unpkg.com/prettier@2.8.0/parser-babel.js"></script> <!-- For JavaScript -->
+<script src="https://unpkg.com/prettier@2.8.0/parser-html.js"></script>  <!-- For HTML -->
+<script src="https://unpkg.com/prettier@2.8.0/parser-postcss.js"></script>  <!-- For CSS -->
+<!-- Prism.js for syntax highlighting -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script> <!-- For C# -->
