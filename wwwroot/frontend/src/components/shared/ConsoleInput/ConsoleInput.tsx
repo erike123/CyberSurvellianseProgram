@@ -50,6 +50,21 @@ const CommunityLanding: React.FC = () => {
           </select>
         </div>
 
+
+        <div style={styles.field}>
+          <label>Darkweb disclosure:</label>
+          <select name="aiDeceptionType" value={formData.aiDeceptionType} onChange={handleChange} style={styles.input}>
+           Screenshot,blank fild fro data,info from the user
+          </select>
+        </div>
+
+        <div style={styles.field}>
+          <label>Malicious IP</label>
+          <select name="aiDeceptionType" value={formData.aiDeceptionType} onChange={handleChange} style={styles.input}>
+           IP,Type of service,Blank fild why,Screenshot
+          </select>
+        </div>
+
         <div style={styles.field}>
           <label>Blockchain Threat Type:</label>
           <select name="blockchainThreatType" value={formData.blockchainThreatType} onChange={handleChange} style={styles.input}>
