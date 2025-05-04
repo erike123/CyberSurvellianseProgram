@@ -24,6 +24,8 @@ export default function App() {
           <Route path={Path.Audit} element={<AuditComponent />} />
           <Route path={Path.Analysis} element={<AnalysisComponent />} />
           <Route path={Path.SignalReportPage} element={<SignalReportPage />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/report" element={<SignalReportPage />} />
 
         </Routes>
     

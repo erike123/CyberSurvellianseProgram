@@ -1,21 +1,34 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export const SignalReportPage: React.FC = () => {
+  const location = useLocation();
+  const prefill = location.state || {};
+
   const [formData, setFormData] = useState({
     name: "",
     contact: "",
     role: "",
-    aiMisuse: "",
-    web3ScamType: "",
-    cyberThreatDescription: "",
+    aiMisuse: prefill.title?.includes("AI") ? prefill.title : "",
+    web3ScamType: prefill.title?.includes("Phishing") ? "Fake Airdrop / Phishing" : "",
+    cyberThreatDescription: prefill.description || "",
     affectedEntities: "",
     additionalNotes: "",
-    proposedAction: ""
+    proposedAction: prefill.use || "",
+    screenshot: null as File | null,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      setFormData((prev) => ({ ...prev, screenshot: e.target.files![0] }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -32,7 +45,6 @@ export const SignalReportPage: React.FC = () => {
       </p>
 
       <form onSubmit={handleSubmit} style={styles.form}>
-
         <div style={styles.field}>
           <label>Name / Organization:</label>
           <input type="text" name="name" value={formData.name} onChange={handleChange} style={styles.input} required />
@@ -121,6 +133,17 @@ export const SignalReportPage: React.FC = () => {
             onChange={handleChange}
             placeholder="Any links, logs, or further context..."
             style={styles.textarea}
+          />
+        </div>
+
+        <div style={styles.field}>
+          <label>Attach Screenshot (optional):</label>
+          <input
+            type="file"
+            accept="image/*"
+            name="screenshot"
+            onChange={handleFileChange}
+            style={styles.input}
           />
         </div>
 

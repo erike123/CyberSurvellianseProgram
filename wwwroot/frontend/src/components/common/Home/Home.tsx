@@ -2,6 +2,15 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Path from "../../../Paths";
 
+// ✅ Import all images from same folder
+import deepfakeImg from "./deepfake.png";
+import sycophancyImg from "./sycophancy.png";
+import aiThreatsImg from "./ai-threats.png";
+import repressionImg from "./repression.png";
+import phishingImg from "./phishing.png";
+import privacyImg from "./privacy.png";
+import bankFraudImg from "./bank-fraud.png";
+
 const Home = () => {
   const navigate = useNavigate();
 
@@ -12,7 +21,7 @@ const Home = () => {
       description:
         "Hard to detect automatically. Requires human validation. DAO can shine here.",
       use: "Used for building ethical analysis datasets and AI detection models.",
-      image: "/images/deepfake.png",
+      image: deepfakeImg,
     },
     {
       title: "AI Sycophancy",
@@ -20,7 +29,7 @@ const Home = () => {
       description:
         "AI systems echoing beliefs to manipulate. Politically and socially impactful.",
       use: "Used to monitor narrative shaping and coordinated disinformation.",
-      image: "/images/sycophancy.png",
+      image: sycophancyImg,
     },
     {
       title: "General AI Threats",
@@ -28,7 +37,7 @@ const Home = () => {
       description:
         "Broad threats that include social engineering and misinformation.",
       use: "Helps develop AI safety policies and detection algorithms.",
-      image: "/images/ai-threats.png",
+      image: aiThreatsImg,
     },
   ];
 
@@ -39,7 +48,7 @@ const Home = () => {
       description:
         "Critical in conflict zones. Hard to detect automatically — human signal is key.",
       use: "Used in humanitarian monitoring feeds and collaborations.",
-      image: "/images/repression.png",
+      image: repressionImg,
     },
     {
       title: "Phishing / Malicious Sites",
@@ -47,7 +56,7 @@ const Home = () => {
       description:
         "Easy for users to recognize and report. Can be automated with threat lists.",
       use: "Feeds blacklists, protects users in real time.",
-      image: "CyberSurvellianseProgram-master/public/images/repression.png",
+      image: phishingImg,
     },
     {
       title: "Abuse of Personal Data / Biometrics",
@@ -55,7 +64,7 @@ const Home = () => {
       description:
         "Reported by whistleblowers, insiders, or affected users.",
       use: "Supports compliance alerts, ethical reviews, and DLP strategies.",
-      image: "/images/privacy.png",
+      image: privacyImg,
     },
     {
       title: "Bank Theft & Malicious Transactions",
@@ -63,7 +72,7 @@ const Home = () => {
       description:
         "Users can report suspicious crypto or fiat transactions involving known actors.",
       use: "Enables blacklist proposals, exchange alerts, and risk modeling.",
-      image: "/images/bank-fraud.png",
+      image: bankFraudImg,
     },
   ];
 
@@ -84,7 +93,12 @@ const Home = () => {
       <img
         src={cat.image}
         alt={cat.title}
-        style={{ width: "120px", height: "120px", borderRadius: "8px", objectFit: "cover" }}
+        style={{
+          width: "120px",
+          height: "120px",
+          borderRadius: "8px",
+          objectFit: "cover",
+        }}
       />
       <div style={{ flex: 1 }}>
         <h3 style={{ margin: "0 0 10px", color: "#66ccff" }}>{cat.title}</h3>
@@ -92,17 +106,17 @@ const Home = () => {
         <p style={{ margin: "5px 0", color: "#ccc" }}>{cat.description}</p>
         <p style={{ margin: "5px 0", fontStyle: "italic", color: "#888" }}>{cat.use}</p>
         <button
-          onClick={() => navigate(Path.SignalReportPage)}
-          style={{
-            marginTop: "10px",
-            padding: "10px 16px",
-            backgroundColor: "#007bff",
-            border: "none",
-            borderRadius: "5px",
-            color: "white",
-            cursor: "pointer",
-          }}
-        >
+  onClick={() => navigate(Path.SignalReportPage, { state: cat })}
+  style={{
+    marginTop: "10px",
+    padding: "10px 16px",
+    backgroundColor: "#007bff",
+    border: "none",
+    borderRadius: "5px",
+    color: "white",
+    cursor: "pointer",
+  }}
+>
           Submit Signal
         </button>
       </div>
@@ -110,13 +124,22 @@ const Home = () => {
   );
 
   return (
-    <div style={{ padding: "2rem", backgroundColor: "#0b0c10", color: "white", minHeight: "100vh" }}>
+    <div
+      style={{
+        padding: "2rem",
+        backgroundColor: "#0b0c10",
+        color: "white",
+        minHeight: "100vh",
+      }}
+    >
       <h1 style={{ fontSize: "2rem", marginBottom: "1rem" }}>CyberSurveillance Dashboard</h1>
 
       <h2 style={{ fontSize: "1.5rem", color: "#61dafb" }}>AI Threat Intelligence</h2>
       {aiThreats.map(renderCategory)}
 
-      <h2 style={{ fontSize: "1.5rem", color: "#61dafb", marginTop: "2rem" }}>Social & Privacy Threats</h2>
+      <h2 style={{ fontSize: "1.5rem", color: "#61dafb", marginTop: "2rem" }}>
+        Social & Privacy Threats
+      </h2>
       {socialThreats.map(renderCategory)}
     </div>
   );
