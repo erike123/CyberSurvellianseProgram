@@ -26,10 +26,6 @@ export default function MyContractComponent() {
         console.log(observeData)
         return observeData
     }
-<<<<<<< HEAD
-=======
-    000000000000000000000000000000000000000003
->>>>>>> 40c7dfb047049537d13840c31c1d7f071d587d5c
     main(poolContract, 1000)
 
     const [result, setResult] = useState();

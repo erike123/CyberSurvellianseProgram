@@ -36,15 +36,8 @@ const data = [
         role: 'FrontEnd',
         description: 'Emil is a Frontend and Django dev with a passion for web development and blockchain technology.'
     },
-<<<<<<< HEAD
-=======
-    {
-        name: 'Pizza',
-        image: pizza,
-        role: 'Morale Booster',
-        description: 'Pizza isn’t just a snack—it’s the ultimate morale booster of the SolidGuard team.'
-    }
->>>>>>> 40c7dfb047049537d13840c31c1d7f071d587d5c
+
+ 
 ]
 
 export default data;

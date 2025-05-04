@@ -6,6 +6,8 @@ import Path from './Paths';
 import AnalysisComponent from './sections/AudiPage/AnalysisComponent';
 import AuditComponent from './sections/AudiPage/AuditComponent';
 import AuditPage from './sections/AudiPage/AuditComponent';
+import SignalReportPage from './sections/AudiPage/SignalReportPage';
+
 import Footer from './sections/Footer/Footer';
 import Hero from './sections/Hero/Hero';
 import Navigation from './sections/Navigation/Navigation';
@@ -21,7 +23,10 @@ export default function App() {
           <Route path={Path.Aboutus} element={<Aboutus />} />
           <Route path={Path.Audit} element={<AuditComponent />} />
           <Route path={Path.Analysis} element={<AnalysisComponent />} />
+          <Route path={Path.SignalReportPage} element={<SignalReportPage />} />
+
         </Routes>
+    
       <Footer />
     </main>
   )

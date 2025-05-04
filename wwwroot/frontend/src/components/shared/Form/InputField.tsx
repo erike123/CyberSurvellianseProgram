@@ -8,12 +8,9 @@ export default function InputField({
     inputName: string,
     inputType: string,
     labelText: string,
-<<<<<<< HEAD
     onChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;    defaultValue: string;
-=======
     onChangeHandler: string,
     defaultValue: string;
->>>>>>> 40c7dfb047049537d13840c31c1d7f071d587d5c
 }) {
     return(
         <>
